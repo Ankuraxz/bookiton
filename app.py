@@ -318,7 +318,7 @@ while True:
 
         user_choice = 1
         while user_choice != 5:
-            print("press 1 for seat reservation, 2 for Cancellation, 3 for Change, 4 for Resell, 5 for Exit \n")
+            print("press 1 for seat reservation, 2 for Cancellation, 3 for Change, 4 for Resell, 5 for Exit, 6 for Notifications \n")
             user_choice = int(input("Enter your choice \n"))
             if user_choice == 1:
                 if uarr.get(usernamex)[3][0]==0: # If new user or no seat booked already
@@ -541,6 +541,10 @@ while True:
                             resell_business.append([usernamex, btype, bid, [x,y], price])
                             print("Seat Resell Requested")
 
+            elif user_choice==6 :
+                print("Your Notifications are: ")
+                notif = uarr.get(usernamex)[7]
+                print(notif,sep="\n")
 
 
 
