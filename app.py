@@ -290,17 +290,46 @@ while True:
     if user_typex == 1:
     ## Buisness Options
         print("Welcome "+ usernamex)
-        b = buisness_select(usernamex)
-        btype = b[0]
-        if btype == None:
-            break
-        else:
-            bid = b[1]
-            res = create_seat_matrix(usernamex)
-            matrix=res[0]
-            num_row=res[1]
-            price = price_select(usernamex,matrix)
-            available_Business.append([usernamex,btype,bid,(int(num_row)**2),price])
+        choice=0
+        while choice != 5:
+            print("press 1 to Enter Buisness, 2 for Messages, 3 for Notifications, 4 for Price change, 5 for Exit \n")
+            choice = int(input("Enter your choice: "))
+            if choice == 1:
+                b = buisness_select(usernamex)
+                btype = b[0]
+                if btype == None:
+                    break
+                else:
+                    bid = b[1]
+                    res = create_seat_matrix(usernamex)
+                    matrix=res[0]
+                    num_row=res[1]
+                    price = price_select(usernamex,matrix)
+                    available_Business.append([usernamex,btype,bid,(int(num_row)**2),price])
+
+
+            elif choice==2:
+                message = barr.get(usernamex)[8]
+                if len(message)>0:
+                    print("Messages are: ", message, sep = '\n')
+                else:
+                    print("No Messages")
+
+
+            elif choice==3:
+                notification = barr.get(usernamex)[7]
+                if len(notification)>0:
+                    print("Notifications are: ", notification, sep = '\n')
+                else:
+                    print("No Notifications")
+
+
+            elif choice==4 and barr.get(usernamex)[3]!=None:
+                matrix = barr.get(usernamex)[4]
+                price = price_select(usernamex, matrix)
+                barr[usernamex][6] = price
+
+
 
 
         # print(available_Business)
@@ -544,7 +573,24 @@ while True:
             elif user_choice==6 :
                 print("Your Notifications are: ")
                 notif = uarr.get(usernamex)[7]
-                print(notif,sep="\n")
+                if len(notif)==0:
+                    print("No Notifications")
+                else:
+                    print(notif,sep="\n")
+
+            elif user_choice==7 :
+                print("Your Messages are: ")
+                message = barr.get(usernamex)[8]
+                if len(message)==0:
+                    print("No Messages")
+                else:
+                    print(message,sep="\n")
+
+            elif user_choice==8 and uarr.get(usernamex)[3][0]==1:
+                b_owner = uarr.get(usernamex)[4]
+                msg = str(input("Enter your Message for the Business Owner"+str(b_owner)))
+                barr[b_owner][8].append(msg)
+
 
 
 
