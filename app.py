@@ -2,6 +2,8 @@ import datetime
 import uuid
 
 # ['321', 1, UUID('4be4e495-d738-44f2-adac-59ab4e424cf4'), 5, [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]]
+# uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price,[],[]]})
+#'john': ['321', 1, UUID('ce2e4207-a015-4b2e-a340-14a23e1d4a2a'), 5, [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 5, 45,[],[]]
 
 uarr=barr={}
 available_Business=[]
@@ -125,6 +127,8 @@ def price_select(usernamex,matrix):
         price = int(input(print("Enter the base price")))
         barr[usernamex].append(num_row)
         barr[usernamex].append(price)
+        barr[usernamex].append([]) #Notificaiton
+        barr[usernamex].append([]) #Message
         return price
 
 
@@ -306,7 +310,7 @@ while True:
 
     elif user_typex == 0:
         # For user
-        uarr.update({usernamex: [usernamex, passwordx, 10000, [0, None, None], None, None, None]})
+        uarr.update({usernamex: [usernamex, passwordx, 10000, [0, None, None], None, None, None,[],[]]})
         bal = uarr.get(usernamex)[2]
 
         print("Welcome " + usernamex)
@@ -346,7 +350,12 @@ while True:
                                 print("Seat Booked Successfully")
                                 print("Seat Number is",x,y)
                                 transaction.append([usernamex, b_owner, b_price, [x, y], datetime.datetime.now()])
-                                uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, b_price]})
+                                notif = uarr.get(usernamex)[7]
+
+                                uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, b_price,[],[]]})
+                                notif.append("Seat Booked Successfully" + str([x, y]))
+                                uarr[usernamex][7] = notif
+                                #MESSAGE TO BUSSINESS OWNER
 
 
 
@@ -357,6 +366,7 @@ while True:
                             b_matrix = barr.get(b_owner)[4]
                             b_rows = barr.get(b_owner)[5]
                             b_price = barr.get(b_owner)[6]
+                            # print("Barr",barr)
                             print("Selection Made, Please enter seat number of the seat matrix as Column Num, Row Num \n")
                             print("Seats Available \n",b_num_seat)
                             print("Rows & Column Available \n",b_num_seat**(1/2))
@@ -385,7 +395,14 @@ while True:
                                     barr[b_owner][4] = b_matrix
                                     print("Seat Booked")
                                     transaction.append([usernamex, b_owner, price, [x, y], datetime.datetime.now()])
-                                    uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price]})
+                                    notif = uarr.get(usernamex)[7]
+                                    notif.append("Seat Booked" + str([x, y]))
+
+                                    uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price,[],[]]})
+                                    uarr[usernamex][7] = notif
+                                    notifb = barr.get(b_owner)[7]
+                                    notifb.append("Seat Booked" + str([x, y]))
+                                    barr[b_owner][7] = notifb
                                     print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
                                 else:
                                     print("Insufficient Balance")
@@ -412,9 +429,26 @@ while True:
                 b_matrix = barr.get(b_owner)[4]
                 x = uarr.get(usernamex)[3][1]
                 y = uarr.get(usernamex)[3][2]
+                # b_owner = uarr.get(usernam
+                bal = uarr.get(usernamex)[2]
+                b_matrix = barr.get(b_owner)[4]
+                # b_rows = barr.get(b_owner)[5]
+                # b_price = barr.get(b_owner)[6]
+
+                # x = uarr.get(usernamex)[3][1]
+                # y = uarr.get(usernamex)[3][2]
                 b_matrix[x][y] = 0
                 barr[b_owner][4] = b_matrix
                 uarr[usernamex][3][0] = 0
+                notifb = barr.get(b_owner)[7]
+                notifb.append("Seat Cancelled" + str([x, y]))
+                barr[b_owner][7] = notifb
+                notif = uarr.get(usernamex)[7]
+                notif.append("Seat Cancelled" + str([x, y]))
+
+                uarr.update({usernamex: [usernamex, passwordx, bal, [0, None, None], None, None, None, [], []]})
+                uarr[usernamex][7] = notif
+
 
             elif user_choice == 3 and uarr.get(usernamex)[3][0]==1: # Seat already booked
                 print("Seat Change")
@@ -449,11 +483,18 @@ while True:
                         print("Effective Available Balance is ", bal - price)
                         b_matrix[x1][y1] = 1
                         b_matrix[x][y] = 0 # Old seats Unbooked
-                        uarr.update({usernamex: [usernamex, passwordx, bal, [1, x1, y1], b_owner, bidu, price]})
+                        notif = uarr.get(usernamex)[7]
+                        notif.append("Seat Changed" + str([x, y]))
+
+                        uarr.update({usernamex: [usernamex, passwordx, bal, [1, x1, y1], b_owner, bidu, price,[],[]]})
+                        uarr[usernamex][7] = notif
                         transaction.append([usernamex, b_owner, price, [x1, y1], datetime.datetime.now()])
 
                         barr[b_owner][4] = b_matrix
                         print("Seat Booked")
+                        notifb = barr.get(b_owner)[7]
+                        notifb.append("Seat Changed" + str([x1, y1]))
+                        barr[b_owner][7] = notifb
                         print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
 
 
@@ -465,7 +506,7 @@ while True:
                     print("Seat Already Booked")
                     break
 
-                uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price]})
+                # uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price,[],[]]})
 
             elif user_choice == 4 and uarr.get(usernamex)[3][0]==1: # Seat already booked
                 print("Seat Resell")
@@ -491,6 +532,10 @@ while True:
                             print("Invalid Price")
                             break
                         else:
+                            notif = uarr.get(usernamex)[7]
+                            notif.append("Seat Resell request Accepted" + str([x, y]))
+                            uarr[usernamex][7] = notif
+
 
 
                             resell_business.append([usernamex, btype, bid, [x,y], price])
