@@ -5,11 +5,12 @@ import uuid
 # uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price,[],[]]})
 #'john': ['321', 1, UUID('ce2e4207-a015-4b2e-a340-14a23e1d4a2a'), 5, [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 5, 45,[],[]]
 
-uarr=barr={}
+uarr=barr=admin={}
 available_Business=[]
 resell_business=[]
 available_user=[]
 transaction=[]
+complaints=[]
 class user:
 
     def __init__(self, username=None,password=None,message=[],notif=[],btypeu=None,sid=None,date=None,subscribe=None):
@@ -36,9 +37,20 @@ class buisness:
     def adder(self,barr):
         barr.update({self.username:[self.password]})
 
+class adminuser:
+
+    def __init__(self, username=None,password=None,complaint=[],transaction=[]):
+        self.username = username
+        self.password = password
+        self.complaint = complaint
+        self.transaction = transaction
+
+    def adder(self,admin):
+        admin.update({self.username:[self.password]})
+
 def signin():
     print("ENTER TYPE OF USER")
-    ux=int(input("Enter 0 for user, 1 for Buisness"))
+    ux=int(input("Enter 0 for user, 1 for Buisness, 2 for Super Admin"))
 
     username = input("ENTER USERNAME: ").lower()
     password = input("ENTER PASSWORD: ")
@@ -62,8 +74,13 @@ def signin():
         else:
             print("Username doesn't exist")
 
-    else:
-        print("Login success as Admin")
+    elif ux==2:
+        if username in admin.keys():
+            if password == admin[username][0]:
+                print("Login Success as Admin")
+                return (username, password, ux)
+            else:
+                print("Password is incorrect")
 
 def buisness_select(usernamex):
     print("Select Buisness")
@@ -279,6 +296,11 @@ if __name__ == "__main__":
     mahesh.password = "321"
     mahesh.adder(barr)
 
+    xyz = adminuser()
+    xyz.username = "admin"
+    xyz.password = "admin"
+    xyz.adder(admin)
+
 
 ## Code starts here
 while True:
@@ -292,7 +314,7 @@ while True:
         print("Welcome "+ usernamex)
         choice=0
         while choice != 5:
-            print("press 1 to Enter Buisness, 2 for Messages, 3 for Notifications, 4 for Price change, 5 for Exit \n")
+            print("press 1 to Enter Business \n, 2 for Messages \n, 3 for Notifications \n, 4 for Price change \n, 5 for Exit \n")
             choice = int(input("Enter your choice: "))
             if choice == 1:
                 b = buisness_select(usernamex)
@@ -347,7 +369,7 @@ while True:
 
         user_choice = 1
         while user_choice != 5:
-            print("press 1 for seat reservation, 2 for Cancellation, 3 for Change, 4 for Resell, 5 for Exit, 6 for Notifications \n")
+            print("press 1 for seat reservation \n, 2 for Cancellation \n, 3 for Change \n, 4 for Resell \n, 5 for Exit \n, 6 for Notifications & Seat Status \n, 7 for Your Messages \n, 8 to send Message \n 9 to complaint")
             user_choice = int(input("Enter your choice \n"))
             if user_choice == 1:
                 if uarr.get(usernamex)[3][0]==0: # If new user or no seat booked already
@@ -571,12 +593,22 @@ while True:
                             print("Seat Resell Requested")
 
             elif user_choice==6 :
-                print("Your Notifications are: ")
-                notif = uarr.get(usernamex)[7]
-                if len(notif)==0:
-                    print("No Notifications")
-                else:
-                    print(notif,sep="\n")
+                ix = int(input("Enter 1 for Seat Status, 2 for all notifications"))
+                if ix==2:
+                    print("Your Notifications are: ")
+                    notif = uarr.get(usernamex)[7]
+                    if len(notif)==0:
+                        print("No Notifications")
+                    else:
+                        print(notif,sep="\n")
+                elif ix==1:
+                    print("Your Seat Status is: ")
+                    seat = uarr.get(usernamex)[3]
+
+                    if seat[0]==0:
+                        print("No Seat Booked")
+                    else:
+                        print("Seat Booked at "+ str(seat[1]+1,",",seat[2]+1))
 
             elif user_choice==7 :
                 print("Your Messages are: ")
@@ -591,6 +623,30 @@ while True:
                 msg = str(input("Enter your Message for the Business Owner"+str(b_owner)))
                 barr[b_owner][8].append(msg)
 
+            elif user_choice==9:
+                complaint = str(input("Enter your Complaint"))
+                complaints.append([usernamex,complaint,datetime.datetime.now()])
+
+
+    elif user_typex ==2:
+        print("Welcome Admin")
+        user_choice=0
+        while user_choice!=3:
+            print("Welcome", usernamex)
+            print("1. View Complaints")
+            print("2. View Transactions")
+            print("3. Exit")
+            user_choice = int(input())
+            if user_choice == 1:
+                print("Complaints are: ")
+                print(complaints,sep="\n")
+            elif user_choice == 2:
+                print(transaction,sep="\n")
+            elif user_choice == 3:
+                break
+            else:
+                print("Invalid Input")
+                break
 
 
 
