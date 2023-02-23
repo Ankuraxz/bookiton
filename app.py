@@ -11,9 +11,49 @@ resell_business=[]
 available_user=[]
 transaction=[]
 complaints=[]
-class user:
 
-    def __init__(self, username=None,password=None,message=[],notif=[],btypeu=None,sid=None,date=None,subscribe=None):
+class login:
+    def __init__(self, username=None,password=None):
+        self.username = username
+        self.password = password
+
+    def signin(self):
+        print("ENTER TYPE OF USER")
+        ux=int(input("Enter 0 for user, 1 for Buisness, 2 for Super Admin"))
+
+        username = input("ENTER USERNAME: ").lower()
+        password = input("ENTER PASSWORD: ")
+        if ux==0:
+            if username in uarr.keys() :
+                if password== uarr[username][0]:
+                    print("Login Success as User ")
+                    return(username,password,ux)
+                else:
+                    print("Password is incorrect")
+            else:
+                print("Username is incorrect")
+        elif ux==1:
+            if username in barr.keys() :
+                if password== barr[username][0]:
+                    print("Login Success as Buisness ")
+                    return(username,password,ux)
+                else:
+                    print("Password is incorrect")
+            else:
+                print("Username is incorrect")
+        elif ux==2:
+            if username in admin.keys() :
+                if password== admin[username][0]:
+                    print("Login Success as Admin ")
+                    return(username,password,ux)
+                else:
+                    print("Password is incorrect")
+            else:
+                print("Username is incorrect")
+
+class user(login):
+
+    def __init__(self, username=None,password=None,message=[],notif=[],btypeu=None,sid=None,date=None,subscribe=None, bal=None):
         self.username = username
         self.password = password
         self.message = message
@@ -22,10 +62,21 @@ class user:
         self.sid = sid
         self.date = date
         self.subscribe = subscribe
+        self.bal = bal
     def adder(self,uarr):
         uarr.update({self.username:[self.password]})
+    def addvalue(self,uarr):
+        uarr[self.username].append(self.btype)
+        uarr[self.username].append(self.sid)
+        uarr[self.username].append(self.date)
+        uarr[self.username].append(self.subscribe)
+        uarr[self.username].append(self.notif)
+        uarr[self.username].append(self.message)
 
-class buisness:
+
+
+
+class buisness(login):
     def __init__(self, username=None,password=None,price=0,num_row=0,message=[],notif=[],btype=None,bid=0):
         self.username = username
         self.password = password
@@ -37,7 +88,62 @@ class buisness:
     def adder(self,barr):
         barr.update({self.username:[self.password]})
 
-class adminuser:
+    def addvalue(self,barr):
+        barr[self.username].append(self.price)
+        barr[self.username].append(self.num_row)
+        barr[self.username].append(self.btype)
+        barr[self.username].append(self.bid)
+        barr[self.username].append(self.notif)
+        barr[self.username].append(self.message)
+
+    def buisness_select(self):
+
+            print("Select Buisness")
+            print("1. Restaurant")
+            print("2. Cinema")
+            print("3. Hotel")
+            print("4. Train")
+            print("5. Airplane")
+            print("6. Exit")
+            self.btype = int(input("Enter your choice: "))
+            if buisness == 1:
+                print("Restaurant")
+                btypeu = 1
+            elif buisness == 2:
+                print("Cinema")
+                btypeu = 2
+            elif buisness == 3:
+                print("Hotel")
+                btypeu = 3
+            elif buisness == 4:
+                print("Train")
+                btypeu = 4
+            elif buisness == 5:
+                print("Airplane")
+                btypeu = 5
+            elif buisness == 6:
+                print("Exit")
+                btypeu = None
+
+    def create_seat_matrix(self):
+        self.num_row = int(input(print("Enter Number of Rows , Atleast 4")))
+        if num_row > 3:
+            matrix = [[0] * num_row for _ in range(num_row)]
+
+            print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in matrix]))
+            barr[self.username].append(num_row)
+            barr[self.username].append(matrix)
+
+    def price_select(self, matrix):
+        if len(matrix) > 3:
+            self.price = int(input(print("Enter the base price")))
+            barr[self.username].append(self.num_row)
+            barr[self.username].append(self.price)
+            barr[self.username].append([])  # Notificaiton
+            barr[self.username].append([])  # Message
+
+
+class adminuser(login):
 
     def __init__(self, username=None,password=None,complaint=[],transaction=[]):
         self.username = username
@@ -47,6 +153,11 @@ class adminuser:
 
     def adder(self,admin):
         admin.update({self.username:[self.password]})
+
+    def addvalue(self,admin):
+        admin[self.username].append(self.complaint)
+        admin[self.username].append(self.transaction)
+
 
 def signin():
     print("ENTER TYPE OF USER")
@@ -81,6 +192,7 @@ def signin():
                 return (username, password, ux)
             else:
                 print("Password is incorrect")
+
 
 def buisness_select(usernamex):
     print("Select Buisness")
@@ -631,10 +743,11 @@ while True:
     elif user_typex ==2:
         print("Welcome Admin")
         user_choice=0
-        while user_choice!=3:
+        while user_choice!=4:
             print("Welcome", usernamex)
             print("1. View Complaints")
             print("2. View Transactions")
+            print("3. View All users and Remove")
             print("3. Exit")
             user_choice = int(input())
             if user_choice == 1:
@@ -643,6 +756,23 @@ while True:
             elif user_choice == 2:
                 print(transaction,sep="\n")
             elif user_choice == 3:
+                print("Print 1 for User, 2 for Business")
+                ix = int(input())
+                if ix==1:
+                    for i,j in enumerate(uarr):
+                        print(i,j)
+                    print("Enter the index of the user to be removed")
+                    ij = int(input())
+                    uarr.pop(list(uarr.keys())[ij])
+
+                elif ix==2:
+                    for i,j in enumerate(barr):
+                        print(i,j)
+                    print("Enter the index of the user to be removed")
+                    ij = int(input())
+                    barr.pop(list(barr.keys())[ij])
+
+            elif user_choice == 4:
                 break
             else:
                 print("Invalid Input")
