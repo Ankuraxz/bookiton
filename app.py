@@ -72,6 +72,9 @@ class user(login):
         uarr[self.username].append(self.subscribe)
         uarr[self.username].append(self.notif)
         uarr[self.username].append(self.message)
+        uarr[self.username].append(self.bal)
+
+
 
 
 
@@ -157,6 +160,31 @@ class adminuser(login):
     def addvalue(self,admin):
         admin[self.username].append(self.complaint)
         admin[self.username].append(self.transaction)
+
+class seatinfo:
+    def __init__(self,x=None,y=None,price=None,user=None,buisness=None,status=0,bid=None): #x,y denote the seat number
+        self.x = x
+        self.y = y
+        self.price = price
+        self.user = user
+        self.buisness = buisness
+        self.status = status
+        self.bid = bid
+
+
+    def seat_info_updater(self,uarr):
+        uarr[self.username][3][0] = self.status
+        uarr[self.username][3][1] = self.x
+        uarr[self.username][3][2] = self.y
+        uarr[self.username][6] = self.price
+        uarr[self.username][5] = self.bid
+        uarr[self.username][4] = self.buisness
+
+
+
+
+
+
 
 
 def signin():
