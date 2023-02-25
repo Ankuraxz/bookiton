@@ -1,10 +1,6 @@
 import datetime
 import uuid
 
-# ['321', 1, UUID('4be4e495-d738-44f2-adac-59ab4e424cf4'), 5, [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]]
-# uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price,[],[]]})
-#'john': ['321', 1, UUID('ce2e4207-a015-4b2e-a340-14a23e1d4a2a'), 5, [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]], 5, 45,[],[]]
-
 uarr=barr=admin={}
 available_Business=[]
 resell_business=[]
@@ -193,9 +189,12 @@ def signin():
 
     username = input("ENTER USERNAME: ").lower()
     password = input("ENTER PASSWORD: ")
+    #print(uarr.keys())
+
     if ux==0:
         if username in uarr.keys() :
-            if password== uarr[username][0]:
+            #print(uarr[username])
+            if password== uarr[username][0] or password == uarr[username][1]:
                 print("Login Success as User ")
                 return(username,password,ux)
             else:
@@ -509,7 +508,7 @@ while True:
 
         user_choice = 1
         while user_choice != 5:
-            print("press 1 for seat reservation \n, 2 for Cancellation \n, 3 for Change \n, 4 for Resell \n, 5 for Exit \n, 6 for Notifications & Seat Status \n, 7 for Your Messages \n, 8 to send Message \n 9 to complaint")
+            print("press 1 for seat reservation \n, 2 for Cancellation \n, 3 for Change \n, 4 for Resell \n, 5 for Exit \n, 6 for Notifications \n, 7 for Your Messages \n, 8 to send Message \n 9 to complaint")
             user_choice = int(input("Enter your choice \n"))
             if user_choice == 1:
                 if uarr.get(usernamex)[3][0]==0: # If new user or no seat booked already
@@ -545,6 +544,8 @@ while True:
 
                                 uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, b_price,[],[]]})
                                 notif.append("Seat Booked Successfully" + str([x, y]))
+
+                                print(notif)
                                 uarr[usernamex][7] = notif
                                 #MESSAGE TO BUSSINESS OWNER
 
@@ -733,22 +734,22 @@ while True:
                             print("Seat Resell Requested")
 
             elif user_choice==6 :
-                ix = int(input("Enter 1 for Seat Status, 2 for all notifications"))
-                if ix==2:
+                ix = int(input("Enter 1  for all notifications"))
+                if ix==1:
                     print("Your Notifications are: ")
                     notif = uarr.get(usernamex)[7]
                     if len(notif)==0:
                         print("No Notifications")
                     else:
                         print(notif,sep="\n")
-                elif ix==1:
-                    print("Your Seat Status is: ")
-                    seat = uarr.get(usernamex)[3]
-
-                    if seat[0]==0:
-                        print("No Seat Booked")
-                    else:
-                        print("Seat Booked at "+ str(seat[1]+1,",",seat[2]+1))
+                # elif ix==1:
+                #     print("Your Seat Status is: ")
+                #     seat = uarr.get(usernamex)[3]
+                #
+                #     if seat[0]==0:
+                #         print("No Seat Booked")
+                #     else:
+                #         print("Seat Booked at "+ str(seat[1]+1,",",seat[2]+1))
 
             elif user_choice==7 :
                 print("Your Messages are: ")
@@ -776,7 +777,7 @@ while True:
             print("1. View Complaints")
             print("2. View Transactions")
             print("3. View All users and Remove")
-            print("3. Exit")
+            print("4. Exit")
             user_choice = int(input())
             if user_choice == 1:
                 print("Complaints are: ")
@@ -805,7 +806,6 @@ while True:
             else:
                 print("Invalid Input")
                 break
-
 
 
 
